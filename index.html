@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Operacional PRO - Versão Final</title>
+    <title>Painel Operacional PRO - Mobile Plus</title>
     <style>
         :root {
             --primary: #1a3a5a;
@@ -24,10 +24,20 @@
         .header { background: var(--primary); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); flex-shrink: 0; }
         .app-container { display: flex; flex: 1; overflow: hidden; flex-direction: column; padding: 10px; }
 
-        .control-panel { background: #fff; padding: 15px; border-radius: 8px 8px 0 0; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .filter-group { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 13px; color: var(--primary); }
+        /* AJUSTE PARA CELULAR: Control Panel flexível */
+        .control-panel { background: #fff; padding: 10px; border-radius: 8px 8px 0 0; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .filter-group { display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 12px; color: var(--primary); }
         
-        select, input[type="text"] { padding: 8px; border-radius: 4px; border: 1px solid #cbd5e0; outline: none; min-width: 180px; }
+        /* SELECTS REDUZIDOS PARA CABER NO CELULAR */
+        select, input[type="text"] { 
+            padding: 8px 4px; 
+            border-radius: 4px; 
+            border: 1px solid #cbd5e0; 
+            outline: none; 
+            font-size: 13px;
+            min-width: 60px; /* Largura mínima pequena para não quebrar */
+            max-width: 130px; /* Limita o tamanho para sobrar espaço lateral */
+        }
 
         .tab-bar { display: flex; background: #e2e8f0; padding: 5px 15px 0; gap: 5px; }
         .tab-btn { padding: 10px 15px; cursor: pointer; border: none; background: #cbd5e0; border-radius: 8px 8px 0 0; font-weight: bold; color: #4a5568; }
@@ -38,14 +48,14 @@
 
         .card-tabela { border: 2px solid var(--primary); border-radius: 8px; background: white; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 10px; }
         .card-header { background: var(--primary); color: white; padding: 8px; text-align: center; }
-        .card-header h4 { margin: 0; font-size: 13px; text-transform: uppercase; }
-        .card-header .sub { display: block; font-size: 10px; margin-top: 4px; background: rgba(255,255,255,0.2); padding: 2px; border-radius: 4px; }
+        .card-header h4 { margin: 0; font-size: 15px; text-transform: uppercase; }
+        .card-header .sub { display: block; font-size: 11px; margin-top: 4px; background: rgba(255,255,255,0.2); padding: 2px; border-radius: 4px; }
 
-        .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; } /* Letra aumentada conforme pedido anterior */
         .mini-table th { background: #f8fafc; border: 1px solid #e2e8f0; padding: 5px 2px; }
-        .mini-table td { border: 1px solid #e2e8f0; padding: 5px 2px; text-align: center; }
+        .mini-table td { border: 1px solid #e2e8f0; padding: 4px 2px; text-align: center; }
         
-        .card-footer { background: var(--note-bg); border-top: 1px solid var(--note-border); padding: 8px; font-size: 10px; color: var(--note-text); }
+        .card-footer { background: var(--note-bg); border-top: 1px solid var(--note-border); padding: 8px; font-size: 12px; color: var(--note-text); }
         .reap-box { background: var(--reap-bg); color: var(--reap-text); padding: 4px; border-radius: 4px; margin-top: 4px; font-weight: bold; border: 1px solid #bee3f8; display: block; }
         
         .status-sync { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
@@ -75,7 +85,7 @@
 <body>
 
 <div class="header">
-    <div style="font-weight: bold;">Cosulta de Linha e Tripulantes</div>
+    <div style="font-weight: bold;">CONSULTA LINHAS E TRIPULANTES</div>
     <div id="sync-status" class="status-sync hidden"></div>
 </div>
 
@@ -84,25 +94,25 @@
         <div class="filter-group">
             <button class="btn-action" onclick="document.getElementById('fileTest').click()">📂 CSV</button>
             <input type="file" id="fileTest" accept=".csv" class="hidden" onchange="importarManual(this)">
-            <button class="btn-action btn-print" onclick="window.print()">🖨️ Imprimir / PDF</button>
+            <button class="btn-action btn-print" onclick="window.print()">🖨️</button>
         </div>
 
         <div id="filter-tabelas" class="filter-group">
-            <span>LINHA:</span>
+            <span>Linha:</span>
             <select id="select-linha" onchange="atualizarListaTabelas()"></select>
-            <span id="label-tabela" class="hidden">TABELA:</span>
+            
+            <span id="label-tabela" class="hidden">Tab:</span>
             <select id="select-tabela" class="hidden" onchange="renderizarTabelas()"></select>
         </div>
 
         <div id="filter-tripulantes" class="filter-group hidden">
-            <span>BUSCAR TRIPULANTE:</span>
-            <input type="text" id="search-trip" placeholder="Ex: 1M" onkeyup="renderizarTripulantes()">
+            <input type="text" id="search-trip" placeholder="Busca Tripulante..." onkeyup="renderizarTripulantes()">
         </div>
     </div>
 
     <div class="tab-bar">
-        <button id="tab-t" class="tab-btn active" onclick="mudarAba('tabelas')">🗂️ Tabelas</button>
-        <button id="tab-p" class="tab-btn" onclick="mudarAba('tripulantes')">👤 Tripulantes</button>
+        <button id="tab-t" class="tab-btn active" onclick="mudarAba('tabelas')">🗂️ Linhas</button>
+        <button id="tab-p" class="tab-btn" onclick="mudarAba('tripulantes')">👤 Tripulante</button>
     </div>
 
     <div class="content-area">
@@ -182,6 +192,7 @@
 "739": "739 - JD. MUNIQUE",
 "ESPU": "ESPU - ESPECIAL URBANO",
 "UEM": "UEM - UNIVERSIDADE"
+
  };
     let dadosGlobais = [];
     let abaAtual = 'tabelas';
@@ -229,7 +240,7 @@
 
         const status = document.getElementById('sync-status');
         status.className = `status-sync ${modo === 'online' ? 'online' : 'manual'}`;
-        status.textContent = modo === 'online' ? '● ONLINE' : '● MANUAL';
+        status.textContent = modo === 'online' ? '● ON' : '● MAN';
         status.classList.remove('hidden');
 
         popularSelectLinhas();
@@ -239,10 +250,13 @@
     function popularSelectLinhas() {
         const unicas = [...new Set(dadosGlobais.map(d => d.linha))]
             .filter(l => l !== "")
-            .sort((a, b) => parseInt(a) - parseInt(b)); // Ordenação Numérica
+            .sort((a, b) => {
+                // Ordenação Natural: trata números e letras corretamente
+                return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+            });
 
-        document.getElementById('select-linha').innerHTML = '<option value="">Escolha...</option>' + 
-            unicas.map(l => `<option value="${l}">${l} - ${traduzirLinha(l)}</option>`).join('');
+        document.getElementById('select-linha').innerHTML = '<option value="">Linha</option>' + 
+            unicas.map(l => `<option value="${l}">${l}</option>`).join('');
     }
 
     function obterVeiculosOrdenados(linha) {
@@ -264,9 +278,9 @@
         if (!linha) { selectTab.classList.add('hidden'); labelTab.classList.add('hidden'); renderizarTabelas(); return; }
 
         const ordenados = obterVeiculosOrdenados(linha);
-        let options = '<option value="TODAS">-- TODAS --</option>';
+        let options = '<option value="TODAS">TODAS</option>';
         ordenados.forEach((v, index) => {
-            options += `<option value="${v}">Tabela ${String(index + 1).padStart(2, '0')} (Carro ${v})</option>`;
+            options += `<option value="${v}">T${String(index + 1).padStart(2, '0')}</option>`;
         });
         selectTab.innerHTML = options;
         selectTab.classList.remove('hidden');
@@ -287,7 +301,7 @@
         const linha = document.getElementById('select-linha').value;
         const tabelaSelecionada = document.getElementById('select-tabela').value;
         const grid = document.getElementById('grid-main');
-        if(!linha) { grid.innerHTML = "<p>Escolha uma linha.</p>"; return; }
+        if(!linha) { grid.innerHTML = "<p>Selecione Linha.</p>"; return; }
 
         const todosVeiculosLinha = obterVeiculosOrdenados(linha);
         let veiculosParaRenderizar = (tabelaSelecionada && tabelaSelecionada !== "TODAS") ? [tabelaSelecionada] : todosVeiculosLinha;
@@ -302,7 +316,7 @@
     function renderizarTripulantes() {
         const busca = document.getElementById('search-trip').value.trim().toLowerCase();
         const grid = document.getElementById('grid-main');
-        if(!busca) { grid.innerHTML = "<p>Digite para buscar...</p>"; return; }
+        if(!busca) { grid.innerHTML = "<p>Digite o tripulante...</p>"; return; }
         
         const todosTrips = [...new Set(dadosGlobais.map(d => d.trip))];
         let encontrados = todosTrips.filter(t => {
@@ -367,9 +381,9 @@
                 <thead>
                     <tr>
                         ${isTab ? '<th>Trip.</th>' : '<th>Carro</th>'}
-                        <th>Origem</th>
+                        <th>Ori</th>
                         <th>Início</th>
-                        <th>Destino</th>
+                        <th>Dest</th>
                         <th>Fim</th>
                         <th>Tipo</th>
                     </tr>
